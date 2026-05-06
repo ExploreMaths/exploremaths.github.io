@@ -28,9 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchGitHubRepos();
     fetchGitHubStats();
     fetchGitHubLanguages();
-    fetchGitHubContributions();
     initMagneticButtons();
-    initScrollLinkedAnimations();
     initLiquidDistortion();
     initSectionNumbers();
     initYear();
@@ -394,16 +392,19 @@ function initNavbar() {
 // ============================================
 function initSkillBars() {
     const skillBars = document.querySelectorAll('.skill-progress');
-    const skillGlows = document.querySelectorAll('.skill-glow');
     
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const bar = entry.target;
                 const width = bar.dataset.width || '0';
+                const glow = bar.nextElementSibling;
                 
                 setTimeout(() => {
                     bar.style.width = `${width}%`;
+                    if (glow && glow.classList.contains('skill-glow')) {
+                        glow.style.width = `${width}%`;
+                    }
                 }, 200);
                 
                 observer.unobserve(bar);
@@ -412,25 +413,6 @@ function initSkillBars() {
     }, { threshold: 0.5 });
     
     skillBars.forEach(bar => observer.observe(bar));
-    
-    // Also animate glow
-    const glowObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const glow = entry.target;
-                const sibling = glow.previousElementSibling;
-                if (sibling) {
-                    const width = sibling.dataset.width || '0';
-                    setTimeout(() => {
-                        glow.style.width = `${width}%`;
-                    }, 200);
-                }
-                glowObserver.unobserve(glow);
-            }
-        });
-    }, { threshold: 0.5 });
-    
-    skillGlows.forEach(glow => glowObserver.observe(glow));
 }
 
 // ============================================
@@ -1067,43 +1049,6 @@ function initMagneticButtons() {
 }
 
 // ============================================
-// SCROLL-LINKED POSITION ANIMATIONS
-// ============================================
-function initScrollLinkedAnimations() {
-    const scrollLinkedElements = document.querySelectorAll('[data-scroll-link]');
-    
-    let ticking = false;
-    
-    window.addEventListener('scroll', () => {
-        if (!ticking) {
-            requestAnimationFrame(() => {
-                const scrollY = window.pageYOffset;
-                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-                const scrollPercent = scrollY / docHeight;
-                
-                scrollLinkedElements.forEach(el => {
-                    const range = parseFloat(el.dataset.scrollRange) || 100;
-                    const axis = el.dataset.scrollAxis || 'y';
-                    const offset = scrollPercent * range;
-                    
-                    if (axis === 'y') {
-                        el.style.transform = `translateY(${offset}px)`;
-                    } else if (axis === 'x') {
-                        el.style.transform = `translateX(${offset}px)`;
-                    } else if (axis === 'rotate') {
-                        el.style.transform = `rotate(${offset}deg)`;
-                    }
-                });
-                
-                ticking = false;
-            });
-            
-            ticking = true;
-        }
-    });
-}
-
-// ============================================
 // LIQUID DISTORTION EFFECT (CSS-based)
 // ============================================
 function initLiquidDistortion() {
@@ -1154,17 +1099,6 @@ function initYear() {
 }
 
 // ============================================
-// ROTATION & SCALE CASCADING EFFECTS
-// ============================================
-function initCascadeEffects() {
-    const cascadeElements = document.querySelectorAll('[data-cascade]');
-    
-    cascadeElements.forEach((el, index) => {
-        el.style.transitionDelay = `${index * 100}ms`;
-    });
-}
-
-// ============================================
 // BLUR TO CLEAR EFFECT TRIGGER
 // ============================================
 function initBlurReveal() {
@@ -1183,76 +1117,6 @@ function initBlurReveal() {
     }, { threshold: 0.2 });
     
     blurElements.forEach(el => observer.observe(el));
-}
-
-// ============================================
-// SCROLL-TRIGGERED LINE ANIMATIONS
-// ============================================
-function initLineAnimations() {
-    const lines = document.querySelectorAll('.section-line');
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.width = '80px';
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.5 });
-    
-    lines.forEach(line => observer.observe(line));
-}
-
-// ============================================
-// PROJECT CARD HOVER ZOOM
-// ============================================
-function initProjectCardEffects() {
-    const projectCards = document.querySelectorAll('.project-card');
-    
-    projectCards.forEach(card => {
-        const image = card.querySelector('.project-placeholder');
-        const overlay = card.querySelector('.project-overlay');
-        
-        card.addEventListener('mouseenter', () => {
-            if (image) {
-                image.style.transform = 'scale(1.1)';
-            }
-            if (overlay) {
-                overlay.style.opacity = '1';
-            }
-        });
-        
-        card.addEventListener('mouseleave', () => {
-            if (image) {
-                image.style.transform = 'scale(1)';
-            }
-            if (overlay) {
-                overlay.style.opacity = '0';
-            }
-        });
-    });
-}
-
-// ============================================
-// SVG PATH DRAWING ANIMATIONS
-// ============================================
-function initSvgAnimations() {
-    const svgPaths = document.querySelectorAll('.draw-line');
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const path = entry.target;
-                const length = path.getTotalLength();
-                path.style.strokeDasharray = length;
-                path.style.strokeDashoffset = length;
-                path.style.animation = 'drawLine 3s ease forwards';
-                observer.unobserve(path);
-            }
-        });
-    }, { threshold: 0.3 });
-    
-    svgPaths.forEach(path => observer.observe(path));
 }
 
 // ============================================
@@ -1303,202 +1167,6 @@ function initScrambleEffect() {
 }
 
 // ============================================
-// STAGGERED LIST REVEAL
-// ============================================
-function initStaggeredReveal() {
-    const staggerContainers = document.querySelectorAll('[data-stagger]');
-    
-    staggerContainers.forEach(container => {
-        const children = container.children;
-        const baseDelay = parseInt(container.dataset.stagger) || 100;
-        
-        Array.from(children).forEach((child, index) => {
-            child.style.opacity = '0';
-            child.style.transform = 'translateY(20px)';
-            child.style.transition = `all 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${index * baseDelay}ms`;
-        });
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    Array.from(entry.target.children).forEach(child => {
-                        child.style.opacity = '1';
-                        child.style.transform = 'translateY(0)';
-                    });
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.2 });
-        
-        observer.observe(container);
-    });
-}
-
-// ============================================
-// MASK TRANSITION EFFECTS
-// ============================================
-function initMaskTransitions() {
-    const maskedElements = document.querySelectorAll('[data-mask]');
-    
-    maskedElements.forEach(el => {
-        const direction = el.dataset.mask || 'left';
-        el.style.clipPath = {
-            'left': 'inset(0 100% 0 0)',
-            'right': 'inset(0 0 0 100%)',
-            'top': 'inset(100% 0 0 0)',
-            'bottom': 'inset(0 0 100% 0)',
-            'circle': 'circle(0% at 50% 50%)',
-            'diamond': 'polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%)'
-        }[direction] || 'inset(0 100% 0 0)';
-        
-        el.style.transition = 'clip-path 1s cubic-bezier(0.16, 1, 0.3, 1)';
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        el.style.clipPath = {
-                            'left': 'inset(0 0 0 0)',
-                            'right': 'inset(0 0 0 0)',
-                            'top': 'inset(0 0 0 0)',
-                            'bottom': 'inset(0 0 0 0)',
-                            'circle': 'circle(100% at 50% 50%)',
-                            'diamond': 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)'
-                        }[direction] || 'inset(0 0 0 0)';
-                    }, parseInt(el.dataset.delay) || 0);
-                    observer.unobserve(el);
-                }
-            });
-        }, { threshold: 0.2 });
-        
-        observer.observe(el);
-    });
-}
-
-// ============================================
-// FLOATING MOTION VARIATIONS
-// ============================================
-function initFloatingMotion() {
-    const floatElements = document.querySelectorAll('[data-float-speed]');
-    
-    floatElements.forEach(el => {
-        const speed = parseFloat(el.dataset.floatSpeed) || 1;
-        const amplitude = parseFloat(el.dataset.floatAmplitude) || 15;
-        const phase = Math.random() * Math.PI * 2;
-        
-        function animate(time) {
-            const y = Math.sin(time * 0.001 * speed + phase) * amplitude;
-            const rotate = Math.sin(time * 0.0005 * speed + phase) * 2;
-            el.style.transform = `translateY(${y}px) rotate(${rotate}deg)`;
-            requestAnimationFrame(animate);
-        }
-        
-        requestAnimationFrame(animate);
-    });
-}
-
-// ============================================
-// PERSPECTIVE SCROLL EFFECTS
-// ============================================
-function initPerspectiveScroll() {
-    const perspectiveSections = document.querySelectorAll('[data-perspective]');
-    
-    let ticking = false;
-    
-    window.addEventListener('scroll', () => {
-        if (!ticking) {
-            requestAnimationFrame(() => {
-                const scrollY = window.pageYOffset;
-                const windowHeight = window.innerHeight;
-                
-                perspectiveSections.forEach(section => {
-                    const rect = section.getBoundingClientRect();
-                    const progress = 1 - (rect.top / windowHeight);
-                    
-                    if (progress > 0 && progress < 2) {
-                        const rotateX = (progress - 0.5) * 10;
-                        const scale = 1 - Math.abs(progress - 0.5) * 0.1;
-                        section.style.transform = `perspective(1000px) rotateX(${rotateX}deg) scale(${scale})`;
-                    }
-                });
-                
-                ticking = false;
-            });
-            
-            ticking = true;
-        }
-    });
-}
-
-// ============================================
-// RIPPLE EFFECT ON BUTTONS
-// ============================================
-function initRippleEffect() {
-    const buttons = document.querySelectorAll('.cta-btn, .social-btn');
-    
-    buttons.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            const ripple = document.createElement('span');
-            ripple.className = 'ripple-effect';
-            
-            const rect = this.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = e.clientX - rect.left - size / 2;
-            const y = e.clientY - rect.top - size / 2;
-            
-            ripple.style.cssText = `
-                position: absolute;
-                width: ${size}px;
-                height: ${size}px;
-                left: ${x}px;
-                top: ${y}px;
-                background: rgba(255, 255, 255, 0.3);
-                border-radius: 50%;
-                transform: scale(0);
-                animation: rippleExpand 0.6s ease-out;
-                pointer-events: none;
-            `;
-            
-            this.style.position = 'relative';
-            this.style.overflow = 'hidden';
-            this.appendChild(ripple);
-            
-            setTimeout(() => ripple.remove(), 600);
-        });
-    });
-    
-    // Add ripple keyframe dynamically
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes rippleExpand {
-            to { transform: scale(2); opacity: 0; }
-        }
-    `;
-    document.head.appendChild(style);
-}
-
-// ============================================
-// INTERSECTION OBSERVER HELPER
-// ============================================
-function observeElements(selector, callback, options = {}) {
-    const defaultOptions = {
-        threshold: 0.15,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                callback(entry.target);
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { ...defaultOptions, ...options });
-    
-    document.querySelectorAll(selector).forEach(el => observer.observe(el));
-}
-
-// ============================================
 // PERFORMANCE: PAUSE ANIMATIONS WHEN HIDDEN
 // ============================================
 document.addEventListener('visibilitychange', () => {
@@ -1507,51 +1175,6 @@ document.addEventListener('visibilitychange', () => {
         canvas.style.display = document.hidden ? 'none' : 'block';
     }
 });
-
-// ============================================
-// LAZY LOAD IMAGES (if any added later)
-// ============================================
-function initLazyLoad() {
-    const lazyImages = document.querySelectorAll('img[data-src]');
-    
-    const imageObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                img.removeAttribute('data-src');
-                imageObserver.unobserve(img);
-            }
-        });
-    });
-    
-    lazyImages.forEach(img => imageObserver.observe(img));
-}
-
-// ============================================
-// SMOOTH REVEAL FOR ALL SECTIONS
-// ============================================
-function initSectionReveal() {
-    const sections = document.querySelectorAll('section');
-    
-    sections.forEach(section => {
-        section.style.opacity = '0';
-        section.style.transform = 'translateY(30px)';
-        section.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-    });
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.05 });
-    
-    sections.forEach(section => observer.observe(section));
-}
 
 // ============================================
 // KEYBOARD NAVIGATION SUPPORT
@@ -1586,19 +1209,8 @@ if (!('IntersectionObserver' in window)) {
 // INITIALIZE ALL ADDITIONAL EFFECTS
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
-    initCascadeEffects();
     initBlurReveal();
-    initLineAnimations();
-    initProjectCardEffects();
-    initSvgAnimations();
     initScrambleEffect();
-    initStaggeredReveal();
-    initMaskTransitions();
-    initFloatingMotion();
-    initPerspectiveScroll();
-    initRippleEffect();
-    initLazyLoad();
-    initSectionReveal();
     
     // Language bar animations are now handled dynamically by renderLanguages()
 });

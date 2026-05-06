@@ -1584,6 +1584,7 @@ body:hover .cursor-trail {
     border-radius: 4px;
     overflow: hidden;
     position: relative;
+    transform: translateZ(0);
 }
 
 .skill-progress {
@@ -1593,13 +1594,14 @@ body:hover .cursor-trail {
     width: 0%;
     transition: width 1.5s var(--ease-out-expo);
     position: relative;
+    overflow: hidden;
 }
 
 .skill-progress::after {
     content: '';
     position: absolute;
     top: 0;
-    right: 0;
+    left: 0;
     width: 20px;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
@@ -2038,21 +2040,6 @@ body:hover .cursor-trail {
     padding: 1.5rem;
     color: var(--text-muted);
     font-size: 0.9rem;
-}
-
-.github-contribution {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 2.5rem;
-    opacity: 0;
-    transform: scale(0.9);
-    transition: all 0.8s var(--ease-out-expo);
-}
-
-.github-contribution.visible {
-    opacity: 1;
-    transform: scale(1);
 }
 
 /* -------------------------------------------- */
@@ -2775,25 +2762,6 @@ body:hover .cursor-trail {
         height: 400px;
     }
     
-    .contrib-grid {
-        gap: 2px;
-    }
-    
-    .contrib-months {
-        grid-auto-columns: 10px;
-        gap: 2px;
-        margin-left: 28px;
-    }
-    
-    .contrib-cell {
-        width: 10px;
-        height: 10px;
-    }
-    
-    .contrib-weekdays span {
-        height: 10px;
-        line-height: 10px;
-    }
 }
 
 /* -------------------------------------------- */
