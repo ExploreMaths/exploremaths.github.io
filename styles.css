@@ -78,6 +78,118 @@ body {
 }
 
 /* -------------------------------------------- */
+/* PAGE LOADER                                  */
+/* -------------------------------------------- */
+.page-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-primary);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.8s var(--ease-out-expo), visibility 0.8s;
+}
+
+.page-loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loader-content {
+    text-align: center;
+}
+
+.loader-text {
+    font-family: var(--font-body);
+    font-size: 1.5rem;
+    color: var(--accent);
+    margin-bottom: 2rem;
+    letter-spacing: 0.1em;
+}
+
+.loader-bar {
+    width: 200px;
+    height: 2px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+}
+
+.loader-progress {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--gradient-end));
+    width: 0%;
+    animation: loaderFill 1.8s var(--ease-out-expo) forwards;
+    box-shadow: 0 0 15px var(--accent-glow);
+}
+
+@keyframes loaderFill {
+    0% { width: 0%; }
+    60% { width: 80%; }
+    100% { width: 100%; }
+}
+
+/* -------------------------------------------- */
+/* SCROLL PROGRESS BAR                          */
+/* -------------------------------------------- */
+.scroll-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--gradient-end));
+    z-index: 10000;
+    width: 0%;
+    box-shadow: 0 0 8px var(--accent-glow);
+    transition: width 0.1s ease-out;
+}
+
+/* -------------------------------------------- */
+/* GLITCH TEXT EFFECT                           */
+/* -------------------------------------------- */
+.glitch-text {
+    position: relative;
+    display: inline-block;
+}
+
+.glitch-text.glitching {
+    animation: glitchText 0.35s ease;
+}
+
+@keyframes glitchText {
+    0% { 
+        text-shadow: 3px 0 #ef4444, -3px 0 #22d3ee;
+        transform: translate(0);
+    }
+    20% { 
+        text-shadow: -3px 0 #ef4444, 3px 0 #22d3ee;
+        transform: translate(2px, -1px);
+    }
+    40% { 
+        text-shadow: 3px 3px #ef4444, -3px -3px #22d3ee;
+        transform: translate(-2px, 2px);
+    }
+    60% { 
+        text-shadow: -3px 2px #ef4444, 3px -2px #22d3ee;
+        transform: translate(1px, 1px);
+    }
+    80% { 
+        text-shadow: 2px -2px #ef4444, -2px 2px #22d3ee;
+        transform: translate(-1px, -1px);
+    }
+    100% { 
+        text-shadow: none;
+        transform: translate(0);
+    }
+}
+
+/* -------------------------------------------- */
 /* CONTAINER UTILITIES                          */
 /* -------------------------------------------- */
 .container {

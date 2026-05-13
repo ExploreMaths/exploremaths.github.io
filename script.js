@@ -9,6 +9,7 @@
 // DOM READY INITIALIZATION
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
+    initPageLoader();
     initCustomCursor();
     initParticleSystem();
     initTypewriter();
@@ -32,7 +33,79 @@ document.addEventListener('DOMContentLoaded', () => {
     initLiquidDistortion();
     initSectionNumbers();
     initYear();
+    initScrollProgress();
+    initGlitchEffect();
 });
+
+// ============================================
+// PAGE LOADER
+// ============================================
+function initPageLoader() {
+    const loader = document.getElementById('pageLoader');
+    if (!loader) return;
+    
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            loader.classList.add('hidden');
+        }, 2000);
+    });
+}
+
+// ============================================
+// SCROLL PROGRESS BAR
+// ============================================
+function initScrollProgress() {
+    const bar = document.getElementById('scrollProgressBar');
+    if (!bar) return;
+    
+    let ticking = false;
+    
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                const scrollTop = window.pageYOffset;
+                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+                bar.style.width = `${progress}%`;
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+}
+
+// ============================================
+// GLITCH EFFECT ON HERO TITLE
+// ============================================
+function initGlitchEffect() {
+    const elements = document.querySelectorAll('.glitch-text');
+    
+    elements.forEach(el => {
+        const triggerGlitch = () => {
+            el.classList.add('glitching');
+            setTimeout(() => {
+                el.classList.remove('glitching');
+            }, 350);
+        };
+        
+        // Initial glitch after a short delay
+        setTimeout(triggerGlitch, 3000);
+        
+        // Random periodic glitches
+        const scheduleNext = () => {
+            const delay = 6000 + Math.random() * 8000;
+            setTimeout(() => {
+                triggerGlitch();
+                scheduleNext();
+            }, delay);
+        };
+        
+        scheduleNext();
+        
+        // Trigger on hover
+        el.addEventListener('mouseenter', triggerGlitch);
+    });
+}
 
 // ============================================
 // CUSTOM CURSOR WITH MAGNETIC EFFECT
